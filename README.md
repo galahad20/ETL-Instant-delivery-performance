@@ -2,10 +2,11 @@
 Personal ETL project using python + deliver into dashboard using Metabase 
 
 📦 Instant Delivery Operations Analytics
+<img width="801" height="491" alt="Screenshot 2025-12-06 at 09 46 22" src="https://github.com/user-attachments/assets/cd5e4d20-3b8b-428a-8cd3-0e05b0c3a50b" />
 
 End-to-End Data Engineering & BI Project
 
-Proyek ini merupakan implementasi lengkap pipeline Data Engineering dan Business Intelligence untuk menganalisis performa pengantaran layanan Instant Delivery. Mulai dari data ingestion, cleaning, transformation, data modeling, loading ke PostgreSQL (Docker), hingga visualisasi menggunakan Metabase.
+Proyek ini merupakan implementasi lengkap pipeline Data Engineering dan Business Intelligence untuk menganalisis performa dari layanan Instant Delivery. Mulai dari data ingestion, cleaning, transformation, data modeling, loading ke PostgreSQL (Docker), hingga visualisasi menggunakan Metabase.
 
 Dashboard akhir digunakan sebagai alat analisis operasional untuk mengidentifikasi performa SLA, waktu pengantaran, faktor cuaca, area, dan jarak.
 
