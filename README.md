@@ -40,12 +40,13 @@ Dashboard akhir digunakan sebagai alat analisis operasional untuk mengidentifika
 
 3. Pipeline Overview
     3.1 Ingestion (ingest.py)
-       - File CSV diperoleh melalui https://www.kaggle.com/datasets/sujalsuthar/amazon-delivery-dataset . File CSVimuat ke Python menggunakan Pandas.
+       - File CSV diperoleh melalui https://www.kaggle.com/datasets/sujalsuthar/amazon-delivery-dataset . File CSV dimuat ke Python menggunakan Pandas.
 
          df = pd.read_csv("data/amazon_delivery.csv")
 
     3.2 Transformation (transform.py)
          Berikut ringkasan fitur yang ditambahkan:
+   
          1. Clean Area Field → area_clean
              - Urban → Urban
              - Metropolitan → Metropolitan
@@ -83,11 +84,12 @@ Dashboard akhir digunakan sebagai alat analisis operasional untuk mengidentifika
               ports:
                 - "5433:5432"
 
-4. Database Modeling
+5. Database Modeling
 
    Tabel utama: deliveries
     
       Column	          Type	        Description
+   
       order_id	        text	        Unique ID
       agent_age	        int	          Courier age
       store_latitude	  float	        Store location
@@ -104,7 +106,7 @@ Dashboard akhir digunakan sebagai alat analisis operasional untuk mengidentifika
       distance_bucket	  text	        Near / Mid-range / Far / Very Far
       on_time_flag	    int	          1 / 0
    
-5. Dashboard (Metabase)
+7. Dashboard (Metabase)
 
    Dashboard terdiri dari:
   
@@ -140,7 +142,7 @@ Dashboard akhir digunakan sebagai alat analisis operasional untuk mengidentifika
            Menunjukkan hubungan jarak dengan peluang keterlambatan.
         
 
-6. How to Run the Project
+8. How to Run the Project
     1. Clone repository
         git clone https://github.com/galahad/instant-delivery-analytics.git
         cd instant-delivery-analytics
@@ -165,7 +167,7 @@ Dashboard akhir digunakan sebagai alat analisis operasional untuk mengidentifika
         Sync & scan tables
         Build dashboard
 
-7. Key Insights (Executive Summary)
+9. Key Insights (Executive Summary)
 
     1. Tingkat on-time delivery sekitar 65%, menunjukkan terdapat ruang besar untuk perbaikan.
     2. Area Metropolitan memiliki volume tertinggi tetapi juga tingkat keterlambatan yang signifikan.
@@ -173,7 +175,7 @@ Dashboard akhir digunakan sebagai alat analisis operasional untuk mengidentifika
     4. Jarak Far dan Very Far meningkatkan waktu pengantaran & risiko keterlambatan.
     5. Kategori Grocery memiliki volume pesanan tertinggi dan SLA 100% (tanpa keterlambatan).
 
-8. Improvement yang bisa dikembangkan
+10. Improvement yang bisa dikembangkan
 
     1. Tambahkan dbt untuk modular data modeling.
     2. Tambahkan Airflow untuk scheduling pipeline otomatis.
