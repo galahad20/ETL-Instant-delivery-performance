@@ -1,189 +1,168 @@
-# ETL-Instant-delivery-performance
-Personal ETL project using python + deliver into dashboard using Metabase 
+# 📦 Instant Delivery Operations Analytics
 
-📦 Instant Delivery Operations Analytics
+End-to-End Data Engineering & Business Intelligence Project
+
+---
+
 <img width="801" height="491" alt="Screenshot 2025-12-06 at 09 46 22" src="https://github.com/user-attachments/assets/cd5e4d20-3b8b-428a-8cd3-0e05b0c3a50b" />
 
-End-to-End Data Engineering & BI Project
 
-Proyek ini merupakan implementasi lengkap pipeline Data Engineering dan Business Intelligence untuk menganalisis performa dari layanan Instant Delivery. Mulai dari data ingestion, cleaning, transformation, data modeling, loading ke PostgreSQL (Docker), hingga visualisasi menggunakan Metabase.
 
-Dashboard akhir digunakan sebagai alat analisis operasional untuk mengidentifikasi performa SLA, waktu pengantaran, faktor cuaca, area, dan jarak.
+## 📌 Background
 
-🗂️ Project Structure
-.
+Instant delivery services face significant operational challenges in maintaining Service Level Agreement (SLA), especially due to factors such as delivery distance, weather conditions, and geographic areas.
+
+Delays in delivery can directly impact customer satisfaction and operational efficiency. Therefore, understanding the key drivers behind late deliveries is essential for optimizing logistics performance.
+
+This project aims to build an end-to-end data pipeline to analyze delivery performance and uncover actionable insights.
+
+---
+
+## 🎯 Objectives
+
+- Build a complete ETL pipeline (Extract, Transform, Load)
+- Perform data cleaning and feature engineering
+- Store processed data in a PostgreSQL database (Dockerized)
+- Develop an interactive dashboard using Metabase
+- Analyze operational performance and identify key delay factors
+
+---
+
+## 🛠️ Tech Stack
+
+| Component        | Technology              |
+|-----------------|------------------------|
+| Data Processing | Python (Pandas, NumPy) |
+| Database        | PostgreSQL (Docker)    |
+| BI Dashboard    | Metabase               |
+| Environment     | Docker, Virtual Env    |
+
+---
+
+## 🗂️ Project Structure
+
+```bash
+project/
 ├── data/
 │   └── amazon_delivery.csv
 ├── ingest.py
 ├── transform.py
 ├── load.py
 ├── docker-compose.yml
-├── README.md  ← (this file)
+└── README.md
+```
 
-1. Objective
-   Membangun pipeline lengkap untuk:
-   - Membersihkan dan menyiapkan dataset pengiriman instant delivery.
-   - Melakukan rekayasa fitur (area_clean, weather_group, distance_bucket, on_time_flag).
-   - Menghitung metrik operasional seperti:
-       -Total Orders
-       -On-Time Delivery Rate
-       -Delivery Time & Pickup Delay
-       -SLA Performance by Category, Area, Distance, Weather
-   - Menyimpan data ke PostgreSQL melalui Docker.
-   - Menyajikan dashboard operasional menggunakan Metabase.
+---
 
-2. Tech Stack
-   Komponen	Teknologi
-   - Data Storage	PostgreSQL (Dockerized)
-   - Data Processing	Python (Pandas, NumPy)
-   - BI Dashboard	Metabase
-   - Environment	Docker, venv (Python)
+## ⚙️ Data Pipeline Overview
 
-3. Pipeline Overview
-    3.1 Ingestion (ingest.py)
-       - File CSV diperoleh melalui https://www.kaggle.com/datasets/sujalsuthar/amazon-delivery-dataset . File CSV dimuat ke Python menggunakan Pandas.
+### 1. Extract (Ingestion)
+```python
+df = pd.read_csv("data/amazon_delivery.csv")
+```
 
-         df = pd.read_csv("data/amazon_delivery.csv")
+### 2. Transform (Feature Engineering)
+- Area Cleaning → area_clean
+- Weather Grouping → weather_group
+- Distance Calculation → distance_km
+- Distance Bucketing → distance_bucket
+- SLA Classification → on_time_flag
 
-    3.2 Transformation (transform.py)
-         Berikut ringkasan fitur yang ditambahkan:
-   
-         1. Clean Area Field → area_clean
-             - Urban → Urban
-             - Metropolitan → Metropolitan
-             - Sub Urban → Non-Urban  
+### 3. Load
+- Data is inserted into PostgreSQL using batch processing
 
-         2. Weather Normalization → weather_group
-             - Clear, Sunny → Good
-             - Cloudy, Rainy → Bad
-             - Distance Calculation → distance_km
+---
 
-         3. Haversine formula digunakan untuk menghitung jarak antara store & drop location.
+## 🧱 Data Modeling
 
-         4. Distance Bucketing → distance_bucket
-            Range	Bucket:
-              0–5 km -> Near
-              5–10 km -> Mid-range
-              10–20 km -> Far
-              >20 km ->	Very Far
-            SLA Flag → on_time_flag
-              on_time → 1  
-              late → 0  
+**Main Table: deliveries**
 
-     3.3 Loading (load.py)
-         Data hasil transformasi di-batch insert ke PostgreSQL dengan execute_batch.
-         INSERT INTO deliveries (...) VALUES (%s, %s, ...)
+| Column            | Description |
+|------------------|------------|
+| order_id         | Unique identifier |
+| agent_age        | Courier age |
+| delivery_time    | Delivery duration (minutes) |
+| sla_status       | on_time / late |
+| area_clean       | Area classification |
+| weather_group    | Weather category |
+| distance_km      | Calculated distance |
+| distance_bucket  | Distance grouping |
+| on_time_flag     | Binary SLA indicator |
 
-          Docker PostgreSQL Setup (docker-compose.yml)
-          services:
-            postgres:
-              image: postgres:15
-              environment:
-                POSTGRES_USER: galahad
-                POSTGRES_PASSWORD: 12345
-                POSTGRES_DB: logistics_db
-              ports:
-                - "5433:5432"
+---
 
-5. Database Modeling
+## 📊 Dashboard (Metabase)
 
-   Tabel utama: deliveries
-    
-      Column	          Type	        Description
-   
-      order_id	        text	        Unique ID
-      agent_age	        int	          Courier age
-      store_latitude	  float	        Store location
-      drop_latitude	    float	        Customer location
-      order_datetime	  timestamp	    Order created
-      pickup_datetime	  timestamp	    Courier pickup
-      pickup_delay	    int	          Minutes
-      delivery_time	    int	          Minutes
-      sla_status	      text	        on_time / late
-      category	        text	        Product category
-      area_clean	      text	        Urban / Non-Urban / Metropolitan
-      weather_group	    text	        Good / Bad
-      distance_km	      float	        Calculated distance
-      distance_bucket	  text	        Near / Mid-range / Far / Very Far
-      on_time_flag	    int	          1 / 0
-   
-7. Dashboard (Metabase)
+### KPI Metrics
+- Total Orders
+- On-Time Delivery Rate
+- Average Delivery Time
+- Average Pickup Delay
 
-   Dashboard terdiri dari:
-  
-    5.1 KPI Cards
-    
-        Total Orders
-        
-        On-Time Delivery Rate
-        
-        Average Delivery Time
-        
-        Average Pickup Delay
+### Visualizations
+- Daily Orders Trend
+- On-Time vs Late Delivery Rate
+- SLA Performance by Area
+- SLA Impact by Weather
+- SLA Performance by Category
+- Delivery Performance by Distance
 
-    5.2 Visualizations
-           Summary : Total Orders, On-Time Delivery Rate, Avg. Delivery Times (Minutes),  Avg. Pick-up Delay (Minutes)
-   
-        🔵 Daily Orders Trend
-           Menampilkan jumlah pesanan harian berdasarkan tanggal pesanan.
-        
-        🟢 Pie Chart – On-Time vs Late Delivery Rate
-           Ilustrasi proporsi SLA secara keseluruhan.
-        
-        📍 SLA Performance by Area
-           Memperlihatkan distribusi on-time & late berdasarkan lokasi pengantaran.
-        
-        ⛅ SLA Performance by Weather
-           Menilai dampak kondisi cuaca terhadap SLA.
-        
-        📦 SLA Performance by Category
-           Top 5 & Top 10 kategori berdasarkan total pesanan + breakdown on_time/late.
-        
-        🚚 Delivery Time Performance by Distance Bucket
-           Menunjukkan hubungan jarak dengan peluang keterlambatan.
-        
+---
 
-8. How to Run the Project
-    1. Clone repository
-        git clone https://github.com/galahad/instant-delivery-analytics.git
-        cd instant-delivery-analytics
-    
-    2. Start PostgreSQL
-        docker-compose up -d
-    
-    3. Create virtual environment
-        python -m venv .venv
-        source .venv/bin/activate
-    
-    4. Install requirements
-        pip install -r requirements.txt
-    
-    5. Run ingestion → transform → load
-        python ingest.py
-        python transform.py
-        python load.py
-    
-    6. Open Metabase
-        Connect PostgreSQL
-        Sync & scan tables
-        Build dashboard
+## 🚀 How to Run
 
-9. Key Insights (Executive Summary)
+```bash
+git clone https://github.com/galahad/instant-delivery-analytics.git
+cd instant-delivery-analytics
 
-    1. Tingkat on-time delivery sekitar 65%, menunjukkan terdapat ruang besar untuk perbaikan.
-    2. Area Metropolitan memiliki volume tertinggi tetapi juga tingkat keterlambatan yang signifikan.
-    3. Kondisi cuaca buruk menyebabkan penurunan SLA yang jelas.
-    4. Jarak Far dan Very Far meningkatkan waktu pengantaran & risiko keterlambatan.
-    5. Kategori Grocery memiliki volume pesanan tertinggi dan SLA 100% (tanpa keterlambatan).
+docker-compose up -d
 
-10. Improvement yang bisa dikembangkan
+python -m venv .venv
+source .venv/bin/activate
 
-    1. Tambahkan dbt untuk modular data modeling.
-    2. Tambahkan Airflow untuk scheduling pipeline otomatis.
-    3. Implementasikan alerts pada Metabase untuk SLA rendah.
-    4. Buat model prediksi late delivery menggunakan machine learning.
-    
-👤 Author
+pip install -r requirements.txt
 
-Dimas Abian
+python ingest.py
+python transform.py
+python load.py
+```
+
+---
+
+## 📈 Key Insights
+
+- On-time delivery rate is approximately 65%
+- Metropolitan areas have higher delay rates
+- Bad weather reduces SLA performance
+- Longer distances increase delay probability
+- Grocery category has best performance
+
+---
+
+## ⚠️ Challenges & Learnings
+
+### Challenges
+- Handling inconsistent categorical values
+- Designing meaningful feature engineering
+- Efficient data loading into PostgreSQL
+
+### Learnings
+- Data cleaning is critical
+- Feature engineering impacts insights
+- Pipeline design is key in data engineering
+
+---
+
+## 🔮 Future Improvements
+
+- Integrate dbt
+- Use Apache Airflow for scheduling
+- Add alerting system
+- Build ML model for prediction
+
+---
+
+## 👤 Author
+
+Dimas Abian  
 Data Engineering & Analytics Enthusiast
